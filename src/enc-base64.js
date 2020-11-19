@@ -13,6 +13,8 @@
          * Converts a word array to a Base64 string.
          *
          * @param {WordArray} wordArray The word array.
+         * 
+         * @param {boolean} urlSafe Whether to use url safe
          *
          * @return {string} The Base64 string.
          *
@@ -22,11 +24,11 @@
          *
          *     var base64String = CryptoJS.enc.Base64.stringify(wordArray);
          */
-        stringify: function (wordArray) {
+        stringify: function (wordArray, urlSafe=false) {
             // Shortcuts
             var words = wordArray.words;
             var sigBytes = wordArray.sigBytes;
-            var map = this._map;
+            var map = urlSafe ? this._safe_map : this._map;
 
             // Clamp excess bits
             wordArray.clamp();
@@ -60,6 +62,8 @@
          * Converts a Base64 string to a word array.
          *
          * @param {string} base64Str The Base64 string.
+         * 
+         * @param {boolean} urlSafe Whether to use url safe
          *
          * @return {WordArray} The word array.
          *
@@ -69,10 +73,10 @@
          *
          *     var wordArray = CryptoJS.enc.Base64.parse(base64String);
          */
-        parse: function (base64Str) {
+        parse: function (base64Str, urlSafe=false) {
             // Shortcuts
             var base64StrLength = base64Str.length;
-            var map = this._map;
+            var map = urlSafe ? this._safe_map : this._map;
             var reverseMap = this._reverseMap;
 
             if (!reverseMap) {
@@ -96,7 +100,8 @@
 
         },
 
-        _map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+        _map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
+        _safe_map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_',
     };
 
     function parseLoop(base64Str, base64StrLength, reverseMap) {
